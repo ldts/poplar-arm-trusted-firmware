@@ -31,6 +31,8 @@
 #include <bl1.h>
 #include <bl_common.h>
 #include <platform_def.h>
+#include <tbbr_img_def.h>
+#include <common_def.h>
 
 image_desc_t bl1_tbbr_image_descs[] = {
     {

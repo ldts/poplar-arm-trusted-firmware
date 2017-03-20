@@ -28,6 +28,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <tbbr_img_def.h>
 #include <arch.h>
 #include <arch_helpers.h>
 #include <assert.h>

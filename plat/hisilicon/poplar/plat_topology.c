@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, ARM Limited and Contributors. All rights reserved.
+ * Copyright (c) 2017, Linaro Limited and Contributors. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -28,63 +28,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <arch_helpers.h>
-#include <assert.h>
-#include <bl_common.h>
-#include <debug.h>
-#include <errno.h>
 #include <platform_def.h>
-#include "tbbr/tbbr_img_def.h"
-#include "common_def.h"
+#include <plat_arm.h>
+#include <arch.h>
+#include <psci.h>
 
-/*
- * The following platform functions are weakly defined. They
- * are default implementations that allow BL1 to compile in
- * absence of real definitions. The Platforms may override
- * with more complex definitions.
- */
-#pragma weak bl1_plat_get_next_image_id
-#pragma weak bl1_plat_set_ep_info
-#pragma weak bl1_plat_get_image_desc
-#pragma weak bl1_plat_fwu_done
+const unsigned char hisi_power_domain_tree_desc[] = {
+	1,
+	PLATFORM_CORE_COUNT,
+};
 
-
-unsigned int bl1_plat_get_next_image_id(void)
+/*******************************************************************************
+ * This function returns the Tegra default topology tree information.
+ ******************************************************************************/
+const unsigned char *plat_get_power_domain_tree_desc(void)
 {
-	/* BL2 load will be done by default. */
-	return BL2_IMAGE_ID;
+	return hisi_power_domain_tree_desc;
 }
 
-void bl1_plat_set_ep_info(unsigned int image_id,
-		entry_point_info_t *ep_info)
+/*******************************************************************************
+ * This function implements a part of the critical interface between the psci
+ * generic layer and the platform that allows the former to query the platform
+ * to convert an MPIDR to a unique linear index. An error code (-1) is returned
+ * in case the MPIDR is invalid.
+ ******************************************************************************/
+int plat_core_pos_by_mpidr(u_register_t mpidr)
 {
+	if (mpidr & MPIDR_CLUSTER_MASK)
+		return -1;
 
-}
+	if ((mpidr & MPIDR_CPU_MASK) >= PLATFORM_CORE_COUNT)
+		return -1;
 
-/*
- * Following is the default definition that always
- * returns BL2 image details.
- */
-image_desc_t *bl1_plat_get_image_desc(unsigned int image_id)
-{
-	static image_desc_t bl2_img_desc = BL2_IMAGE_DESC;
-	return &bl2_img_desc;
-}
-
-__dead2 void bl1_plat_fwu_done(void *client_cookie, void *reserved)
-{
-	while (1)
-		wfi();
-}
-
-/*
- * The Platforms must override with real definition.
- */
-#pragma weak bl1_plat_mem_check
-
-int bl1_plat_mem_check(uintptr_t mem_base, unsigned int mem_size,
-		unsigned int flags)
-{
-	assert(0);
-	return -ENOMEM;
+	return plat_arm_calc_core_pos(mpidr);
 }
