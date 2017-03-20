@@ -10,6 +10,8 @@
 #include <debug.h>
 #include <errno.h>
 #include <platform_def.h>
+#include "tbbr/tbbr_img_def.h"
+#include "common_def.h"
 
 /*
  * The following platform functions are weakly defined. They

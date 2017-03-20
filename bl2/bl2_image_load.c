@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+#include <tbbr_img_def.h>
 #include <arch.h>
 #include <arch_helpers.h>
 #include <assert.h>

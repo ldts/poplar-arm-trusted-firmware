@@ -19,6 +19,7 @@
 #include <utils.h>
 #include "bl1_private.h"
 #include <uuid.h>
+#include "tbbr/tbbr_img_def.h"
 
 /* BL1 Service UUID */
 DEFINE_SVC_UUID(bl1_svc_uid,
